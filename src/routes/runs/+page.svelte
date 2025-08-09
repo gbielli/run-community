@@ -5,11 +5,11 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { Clock, MapPin, Plus } from '@lucide/svelte';
+	import { Calendar, Clock, MapPin, Plus, Users } from '@lucide/svelte';
 
 	interface Run {
 		id: string;
-		title: 'Séance fractionnée' | 'Séance fondamentale' | 'Séance Tempo';
+		title: string;
 		description: string;
 		location: string;
 		date: string;
@@ -39,14 +39,14 @@
 	let runs: Run[] = $state([
 		{
 			id: '1',
-			title: 'Séance fractionnée',
+			title: 'Run matinal du dimanche',
 			description:
 				'Course tranquille autour du lac, parfait pour commencer la journée en douceur. Tous niveaux bienvenus !',
 			location: 'Lac de Vincennes',
 			date: '2025-01-15',
-			time: '08:00 - 8:45',
+			time: '08:00',
 			distance: '8 km',
-			pace: '5:30/km - 5:45/km',
+			pace: '5:30/km',
 			maxParticipants: 15,
 			currentParticipants: 8,
 			organizer: 'Marie Dubois',
@@ -54,14 +54,14 @@
 		},
 		{
 			id: '2',
-			title: 'Séance Tempo',
+			title: 'Séance fractionné en groupe',
 			description:
 				'Entraînement fractionné intensif sur piste. Prévoir des chaussures de running adaptées.',
 			location: 'Stade Charléty',
 			date: '2025-01-16',
-			time: '19:00 - 19:45',
+			time: '19:00',
 			distance: '5 km',
-			pace: '4:00/km - 4:15/km',
+			pace: '4:00/km',
 			maxParticipants: 12,
 			currentParticipants: 5,
 			organizer: 'Thomas Martin',
@@ -69,14 +69,14 @@
 		},
 		{
 			id: '3',
-			title: 'Séance fondamentale',
+			title: 'Course découverte débutants',
 			description:
 				'Parfait pour ceux qui commencent la course à pied. Rythme détendu et conseils inclus.',
 			location: 'Parc de Belleville',
 			date: '2025-01-17',
-			time: '18:30 - 19:15',
+			time: '18:30',
 			distance: '3 km',
-			pace: '6:30/km - 6:45/km',
+			pace: '6:30/km',
 			maxParticipants: 20,
 			currentParticipants: 12,
 			organizer: 'Sophie Laurent',
@@ -130,7 +130,7 @@
 </script>
 
 <svelte:head>
-	<title>Running Community</title>
+	<title>Propositions de Runs - Running Community</title>
 </svelte:head>
 
 <div class="min-h-screen bg-background">
@@ -138,7 +138,7 @@
 		<!-- Header -->
 		<div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 			<div>
-				<h1 class="text-3xl font-bold text-foreground">Running Community</h1>
+				<h1 class="text-3xl font-bold text-foreground">Propositions de Runs</h1>
 				<p class="mt-1 text-muted-foreground">
 					Trouvez votre prochaine course ou proposez la vôtre
 				</p>
@@ -249,18 +249,11 @@
 				<Card class="p-6 transition-shadow hover:shadow-md">
 					<div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 						<div class="flex-1 space-y-3">
-							<div class="flex items-center gap-2">
-								<Clock class="h-4 w-4 text-muted-foreground" />
-								<span>{run.time}</span>
-							</div>
 							<div class="flex flex-wrap items-center gap-2">
 								<h3 class="text-xl font-semibold">{run.title}</h3>
-
 								<Badge>{run.distance}</Badge>
-								{#if run.pace}
-									<Badge>{run.pace}</Badge>
-								{/if}
 							</div>
+
 							{#if run.description}
 								<p class="text-muted-foreground">{run.description}</p>
 							{/if}
@@ -270,6 +263,33 @@
 									<MapPin class="h-4 w-4 text-muted-foreground" />
 									<span>{run.location}</span>
 								</div>
+								<div class="flex items-center gap-2">
+									<Calendar class="h-4 w-4 text-muted-foreground" />
+									<span>{formatDate(run.date)}</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<Clock class="h-4 w-4 text-muted-foreground" />
+									<span>{run.time}</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<Users class="h-4 w-4 text-muted-foreground" />
+									<span>{run.currentParticipants}/{run.maxParticipants} participants</span>
+								</div>
+							</div>
+
+							{#if run.distance || run.pace}
+								<div class="flex flex-wrap gap-4 text-sm">
+									{#if run.distance}
+										<span class="font-medium">Distance: {run.distance}</span>
+									{/if}
+									{#if run.pace}
+										<span class="font-medium">Allure: {run.pace}</span>
+									{/if}
+								</div>
+							{/if}
+
+							<div class="text-sm text-muted-foreground">
+								Organisé par <span class="font-medium">{run.organizer}</span>
 							</div>
 						</div>
 
@@ -281,10 +301,10 @@
 							>
 								{run.currentParticipants >= run.maxParticipants ? 'Complet' : 'Rejoindre'}
 							</Button>
+							<div class="text-center text-xs text-muted-foreground lg:text-right">
+								{run.maxParticipants - run.currentParticipants} places restantes
+							</div>
 						</div>
-					</div>
-					<div class="text-sm text-muted-foreground">
-						Organisé par <span class="font-medium">{run.organizer}</span>
 					</div>
 				</Card>
 			{/each}
