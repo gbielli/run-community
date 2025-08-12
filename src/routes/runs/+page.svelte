@@ -160,25 +160,34 @@
 					}}
 					class="space-y-4"
 				>
+					<div class="grid grid-cols-1 gap-4 space-y-2 md:grid-cols-2">
+						<div>
+							<Label for="distance">Distance</Label>
+							<Input id="distance" bind:value={newRun.distance} placeholder="ex: 10 km" />
+						</div>
+						<div>
+							<Label for="pace">Allure prévue</Label>
+							<Input id="pace" bind:value={newRun.pace} placeholder="ex: 5:30/km" />
+						</div>
+					</div>
 					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<div class="space-y-2">
-							<Label for="title">Titre du run *</Label>
-							<Input
-								id="title"
-								bind:value={newRun.title}
-								placeholder="ex: Run matinal au parc"
-								required
-							/>
+							<Label for="date">Date *</Label>
+							<Input id="date" type="date" bind:value={newRun.date} required />
 						</div>
 						<div class="space-y-2">
-							<Label for="location">Lieu *</Label>
-							<Input
-								id="location"
-								bind:value={newRun.location}
-								placeholder="ex: Parc de Vincennes"
-								required
-							/>
+							<Label for="time">Heure *</Label>
+							<Input id="time" type="time" bind:value={newRun.time} required />
 						</div>
+					</div>
+					<div class="space-y-2">
+						<Label for="location">Lieu *</Label>
+						<Input
+							id="location"
+							bind:value={newRun.location}
+							placeholder="ex: Parc de Vincennes"
+							required
+						/>
 					</div>
 
 					<div class="space-y-2">
@@ -189,50 +198,6 @@
 							placeholder="Décrivez votre run, le niveau requis, les points de rendez-vous..."
 							rows={3}
 						/>
-					</div>
-
-					<div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-						<div class="space-y-2">
-							<Label for="date">Date *</Label>
-							<Input id="date" type="date" bind:value={newRun.date} required />
-						</div>
-						<div class="space-y-2">
-							<Label for="time">Heure *</Label>
-							<Input id="time" type="time" bind:value={newRun.time} required />
-						</div>
-						<div class="space-y-2">
-							<Label for="distance">Distance</Label>
-							<Input id="distance" bind:value={newRun.distance} placeholder="ex: 10 km" />
-						</div>
-						<div class="space-y-2">
-							<Label for="pace">Allure prévue</Label>
-							<Input id="pace" bind:value={newRun.pace} placeholder="ex: 5:30/km" />
-						</div>
-					</div>
-
-					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-						<div class="space-y-2">
-							<Label for="maxParticipants">Participants max</Label>
-							<Input
-								id="maxParticipants"
-								type="number"
-								bind:value={newRun.maxParticipants}
-								min="2"
-								max="50"
-							/>
-						</div>
-						<div class="space-y-2">
-							<Label for="difficulty">Difficulté</Label>
-							<select
-								id="difficulty"
-								bind:value={newRun.difficulty}
-								class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								<option value="Facile">Facile</option>
-								<option value="Modéré">Modéré</option>
-								<option value="Difficile">Difficile</option>
-							</select>
-						</div>
 					</div>
 
 					<div class="flex gap-2 pt-4">
