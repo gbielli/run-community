@@ -20,14 +20,13 @@
 		maxParticipants: number;
 		currentParticipants: number;
 		organizer: string;
-		difficulty: 'Facile' | 'Modéré' | 'Difficile';
+		isJoined?: boolean;
 	}
 
 	interface SearchFilters {
 		distance: string;
 		location: string;
 		date: string;
-		difficulty?: string;
 	}
 
 	// États principaux
@@ -35,8 +34,7 @@
 	let searchFilters = $state<SearchFilters>({
 		distance: '',
 		location: '',
-		date: '',
-		difficulty: ''
+		date: ''
 	});
 
 	let newRun = $state({
@@ -47,8 +45,7 @@
 		time: '',
 		distance: '',
 		pace: '',
-		maxParticipants: 10,
-		difficulty: 'Modéré' as const
+		maxParticipants: 10
 	});
 
 	// Données d'exemple
@@ -118,21 +115,14 @@
 			const matchDate = !searchFilters.date || run.date === searchFilters.date;
 
 			// Filtre par difficulté
-			const matchDifficulty =
-				!searchFilters.difficulty || run.difficulty === searchFilters.difficulty;
 
-			return matchDistance && matchLocation && matchDate && matchDifficulty;
+			return matchDistance && matchLocation && matchDate;
 		});
 	});
 
 	// Computed: Indicateur si des filtres sont actifs
 	let hasActiveFilters = $derived(
-		Boolean(
-			searchFilters.distance ||
-				searchFilters.location ||
-				searchFilters.date ||
-				searchFilters.difficulty
-		)
+		Boolean(searchFilters.distance || searchFilters.location || searchFilters.date)
 	);
 
 	let runningSearchRef: RunningSearch;
@@ -143,7 +133,7 @@
 	}
 
 	function resetSearch() {
-		searchFilters = { distance: '', location: '', date: '', difficulty: '' };
+		searchFilters = { distance: '', location: '', date: '' };
 		if (runningSearchRef) {
 			runningSearchRef.resetForm();
 		}
@@ -168,8 +158,7 @@
 				time: '',
 				distance: '',
 				pace: '',
-				maxParticipants: 10,
-				difficulty: 'Modéré'
+				maxParticipants: 10
 			};
 			showCreateForm = false;
 		}
@@ -191,11 +180,13 @@
 	function joinRun(runId: string) {
 		runs = runs.map((run) => {
 			if (run.id === runId && run.currentParticipants < run.maxParticipants) {
-				return { ...run, currentParticipants: run.currentParticipants + 1 };
+				return { ...run, currentParticipants: run.currentParticipants + 1, isJoined: true };
 			}
 			return run;
 		});
 	}
+
+	let activeRuns = $derived(runs.filter((run) => run.isJoined));
 
 	// Filtres rapides prédéfinis
 	const quickFilters = [
@@ -212,8 +203,6 @@
 			searchFilters.date = filter.value;
 		} else if (filter.type === 'distance') {
 			searchFilters.distance = filter.value;
-		} else if (filter.type === 'difficulty') {
-			searchFilters.difficulty = filter.value;
 		}
 	}
 </script>
@@ -267,6 +256,21 @@
 				</div>
 			{/if}
 
+			{#if activeRuns}
+				<div class="flex flex-wrap gap-2">
+					<span class="text-sm font-medium text-muted-foreground">Runs actifs :</span>
+					{#each activeRuns as run (run.id)}
+						<Badge variant="secondary" class="gap-1">
+							{run.title}
+							<button
+								onclick={() => (activeRuns = activeRuns.filter((r) => r.id !== run.id))}
+								class="ml-1 hover:bg-muted">×</button
+							>
+						</Badge>
+					{/each}
+				</div>
+			{/if}
+
 			<!-- Indicateur des filtres actifs -->
 			{#if hasActiveFilters}
 				<div class="flex flex-wrap gap-2">
@@ -301,14 +305,6 @@
 							>
 						</Badge>
 					{/if}
-					{#if searchFilters.difficulty}
-						<Badge variant="secondary" class="gap-1">
-							Difficulté: {searchFilters.difficulty}
-							<button onclick={() => (searchFilters.difficulty = '')} class="ml-1 hover:bg-muted"
-								>×</button
-							>
-						</Badge>
-					{/if}
 				</div>
 			{/if}
 		</div>
@@ -338,18 +334,6 @@
 								placeholder="Ex: Parc de Vincennes"
 								required
 							/>
-						</div>
-						<div class="space-y-2">
-							<Label for="difficulty">Difficulté</Label>
-							<select
-								id="difficulty"
-								bind:value={newRun.difficulty}
-								class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								<option value="Facile">Facile</option>
-								<option value="Modéré">Modéré</option>
-								<option value="Difficile">Difficile</option>
-							</select>
 						</div>
 					</div>
 
@@ -413,11 +397,8 @@
 									<Badge variant="secondary">{run.distance} km</Badge>
 								{/if}
 								{#if run.pace}
-									<Badge variant="outline">{run.pace}/km</Badge>
+									<Badge variant="secondary">{run.pace}/km</Badge>
 								{/if}
-								<span class={`rounded-full px-2 py-1 text-xs font-medium`}>
-									{run.difficulty}
-								</span>
 							</div>
 
 							{#if run.description}
