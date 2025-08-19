@@ -1,8 +1,7 @@
 import { createAuthClient } from 'better-auth/svelte';
-import { browser } from '$app/environment';
 
 export const authClient = createAuthClient({
-	baseURL: browser ? window.location.origin : 'http://localhost:5173'
+	baseURL: 'http://localhost:5173'
 });
 
-export const { signIn, signUp, signOut, useSession, getSession } = authClient;
+export const { signIn, signUp, signOut, getSession, useSession } = authClient;
