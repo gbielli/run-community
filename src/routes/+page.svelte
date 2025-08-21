@@ -211,7 +211,7 @@
 	<title>Running Community</title>
 </svelte:head>
 
-<div class="min-h-screen bg-background">
+<div class="min-h-screen bg-gray-50">
 	<!-- Composant de recherche -->
 	<RunningSearch bind:this={runningSearchRef} onSearch={handleSearch} onReset={resetSearch} />
 

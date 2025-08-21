@@ -1,6 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import { Button } from '$lib/components/ui/button';
+	import UserNav from '$lib/components/UserNav.svelte';
 	import { Home, MapPin } from '@lucide/svelte';
 	import '../app.css';
 
@@ -41,13 +42,7 @@
 			</div>
 
 			<div class="flex items-center gap-2">
-				<Button variant="ghost" size="sm" href="/runs" class="hidden sm:inline-flex">
-					Voir les runs
-				</Button>
-				<Button size="sm" href="/runs" class="gap-2">
-					<span class="hidden sm:inline">Proposer un run</span>
-					<span class="sm:hidden">+</span>
-				</Button>
+				<UserNav />
 			</div>
 		</div>
 	</div>

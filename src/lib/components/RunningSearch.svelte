@@ -40,7 +40,7 @@
 	}
 </script>
 
-<div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white">
+<div class="p-8">
 	<h1 class="mb-6 text-center text-3xl font-bold">Trouvez votre buddy running</h1>
 
 	<div class="mx-auto max-w-4xl rounded-lg bg-white p-6 text-foreground shadow-xl">

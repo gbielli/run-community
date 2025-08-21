@@ -20,7 +20,7 @@
 	// Redirection si déjà connecté
 	$effect(() => {
 		if ($session.data) {
-			goto('/dashboard');
+			goto('/');
 		}
 	});
 
@@ -40,12 +40,14 @@
 				result = await authClient.signUp.email({
 					email,
 					password,
-					name: email.split('@')[0] // Nom par défaut basé sur l'email
+					name: email.split('@')[0],
+					callbackURL: '/'
 				});
 			} else {
 				result = await authClient.signIn.email({
 					email,
-					password
+					password,
+					callbackURL: '/'
 				});
 			}
 

@@ -7,16 +7,8 @@
 	<meta name="description" content="Connectez-vous à votre compte Running Community" />
 </svelte:head>
 
-<div
-	class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800"
->
+<div class="min-h-screen bg-gray-50 dark:from-gray-900 dark:to-gray-800">
 	<div class="container mx-auto px-4">
-		<!-- Header -->
-		<div class="pt-8 pb-4 text-center">
-			<h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Running Community</h1>
-			<p class="text-gray-600 dark:text-gray-300">Rejoignez la plus grande communauté de runners</p>
-		</div>
-
 		<!-- Login Component -->
 		<LoginForm />
 
