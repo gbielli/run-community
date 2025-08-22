@@ -1,25 +1,15 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { authClient } from '$lib/auth-client';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { auth } from '$lib/stores/auth.svelte';
 	import { ChevronDown, LogOut, Settings, User } from '@lucide/svelte';
 
 	let isLoggedOut = $state(false);
 	const user = $derived(isLoggedOut ? null : page.data?.user);
 	const isAuthenticated = $derived(!!user);
 	const userInitials = $derived(user?.name || '??');
-
-	$effect(() => {
-		console.log('=== DEBUG PAGE DATA ===');
-		console.log('page:', page);
-		console.log('page.data:', page.data);
-		console.log('page.data?.user:', page.data?.user);
-		console.log('page.data?.session:', page.data?.session);
-		console.log('========================');
-	});
 </script>
 
 {#if isAuthenticated && user}
@@ -84,8 +74,8 @@
 				<LogOut class="h-4 w-4" />
 				<button
 					onclick={async () => {
-						await authClient.signOut();
-						goto('/auth/login');
+						await auth.logout();
+						window.location.reload();
 						isLoggedOut = true;
 					}}>Se déconnecter</button
 				>

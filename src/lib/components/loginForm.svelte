@@ -20,7 +20,7 @@
 	// Redirection si déjà connecté
 	$effect(() => {
 		if ($session.data) {
-			goto('/');
+			goto('/dashboard');
 		}
 	});
 
@@ -29,7 +29,6 @@
 
 	async function handleLogin() {
 		if (!isFormValid) return;
-
 		isLoading = true;
 		error = '';
 
@@ -41,13 +40,13 @@
 					email,
 					password,
 					name: email.split('@')[0],
-					callbackURL: '/'
+					callbackURL: '/dashboard'
 				});
 			} else {
 				result = await authClient.signIn.email({
 					email,
 					password,
-					callbackURL: '/'
+					callbackURL: '/dashboard'
 				});
 			}
 
