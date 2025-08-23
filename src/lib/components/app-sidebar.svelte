@@ -3,9 +3,9 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 	import Settings2Icon from '@lucide/svelte/icons/settings-2';
 	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
-	import UserNav from '$lib/components/UserNav.svelte';
+	import { authClient } from '$lib/auth-client';
 
-	const data = {
+	const datas = {
 		user: {
 			name: 'shadcn',
 			email: 'm@example.com',
@@ -42,15 +42,19 @@
 </script>
 
 <script lang="ts">
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import CommandIcon from '@lucide/svelte/icons/command';
+	import type { ComponentProps } from 'svelte';
 	import NavMain from './nav-main.svelte';
 	import NavProjects from './nav-projects.svelte';
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import CommandIcon from '@lucide/svelte/icons/command';
-	import type { ComponentProps } from 'svelte';
 
-	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+	let {
+		ref = $bindable(null),
+		data,
+		...restProps
+	}: ComponentProps<typeof Sidebar.Root> & { data: { session: any } } = $props();
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -66,8 +70,7 @@
 								<CommandIcon class="size-4" />
 							</div>
 							<div class="grid flex-1 text-left text-sm leading-tight">
-								<span class="truncate font-medium">Acme Inc</span>
-								<span class="truncate text-xs">Enterprise</span>
+								<span class="truncate font-medium">Runbuds</span>
 							</div>
 						</a>
 					{/snippet}
@@ -76,12 +79,10 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
-		<NavProjects projects={data.projects} />
-		<NavSecondary items={data.navSecondary} class="mt-auto" />
+		<NavMain items={datas.navMain} />
+		<NavSecondary items={datas.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
-		<UserNav />
+		<NavUser {data} />
 	</Sidebar.Footer>
 </Sidebar.Root>

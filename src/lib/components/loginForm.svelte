@@ -5,9 +5,12 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Eye, EyeOff, Loader2, Lock, Mail } from '@lucide/svelte';
+	import { Eye, EyeOff, Loader2, Lock, Mail, User } from '@lucide/svelte';
 
 	let email = $state('');
+	let firstName = $state('');
+	let lastName = $state('');
+	let fullName = $derived(`${firstName} ${lastName}`);
 	let password = $state('');
 	let isLoading = $state(false);
 	let error = $state('');
@@ -39,7 +42,7 @@
 				result = await authClient.signUp.email({
 					email,
 					password,
-					name: email.split('@')[0],
+					name: fullName,
 					callbackURL: '/dashboard'
 				});
 			} else {
@@ -105,6 +108,42 @@
 						/>
 					</div>
 				</div>
+
+				{#if isSignUp}
+					<div class="space-y-2">
+						<Label for="firstName">Prénom</Label>
+						<div class="relative">
+							<User
+								class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+							/>
+							<Input
+								id="firstName"
+								type="text"
+								placeholder="votre prénom"
+								bind:value={firstName}
+								class="pl-10"
+								required
+							/>
+						</div>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="lastName">Nom</Label>
+						<div class="relative">
+							<User
+								class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+							/>
+							<Input
+								id="lastName"
+								type="text"
+								placeholder="votre nom"
+								bind:value={lastName}
+								class="pl-10"
+								required
+							/>
+						</div>
+					</div>
+				{/if}
 
 				<!-- Password Field -->
 				<div class="space-y-2">

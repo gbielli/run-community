@@ -1,18 +1,17 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { authClient } from '$lib/auth-client';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { auth } from '$lib/stores/auth.svelte';
 	import { ChevronDown, LogOut, Settings, User } from '@lucide/svelte';
 
-	let isLoggedOut = $state(false);
-	const user = $derived(isLoggedOut ? null : page.data?.user);
-	const isAuthenticated = $derived(!!user);
-	const userInitials = $derived(user?.name || '??');
+	let { data } = $props();
+
+	const isAuthenticated = $derived(!!data.session);
+	const userInitials = $derived(data?.user?.name);
 </script>
 
-{#if isAuthenticated && user}
+{#if isAuthenticated}
 	<!-- Avatar + Dropdown -->
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>
@@ -22,8 +21,8 @@
 					class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground"
 				>
 					<Avatar.Root>
-						<Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
-						<Avatar.Fallback>CN</Avatar.Fallback>
+						<Avatar.Image src="https://github.com/shadcn.png" alt="@shadcnnnn" />
+						<Avatar.Fallback>GB</Avatar.Fallback>
 					</Avatar.Root>
 				</div>
 
@@ -42,11 +41,10 @@
 			<DropdownMenu.Label>
 				<div class="flex flex-col space-y-1">
 					<p class="text-sm font-medium">
-						{user.firstName || user.name || 'Utilisateur'}
-						{user.lastName || ''}
+						{data.user.name || 'Utilisateur'}
 					</p>
 					<p class="text-xs text-muted-foreground">
-						{user.email}
+						{data.user.email}
 					</p>
 				</div>
 			</DropdownMenu.Label>
@@ -74,9 +72,8 @@
 				<LogOut class="h-4 w-4" />
 				<button
 					onclick={async () => {
-						await auth.logout();
+						await authClient.signOut();
 						window.location.reload();
-						isLoggedOut = true;
 					}}>Se déconnecter</button
 				>
 			</DropdownMenu.Item>

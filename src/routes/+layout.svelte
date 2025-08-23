@@ -3,19 +3,21 @@
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import UserNav from '$lib/components/UserNav.svelte';
-	import { auth } from '$lib/stores/auth.svelte';
 	import { Home, MapPin } from '@lucide/svelte';
 	import '../app.css';
-	let { children } = $props();
+
+	let { children, data } = $props();
+	let isAuthenticated = $derived(!!data.session);
+	console.log(data);
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{#if auth.isAuthenticated}
+{#if isAuthenticated}
 	<Sidebar.Provider>
-		<AppSidebar />
+		<AppSidebar {data} />
 		<Sidebar.Inset>
 			<header class="flex h-16 shrink-0 items-center gap-2">
 				<div class="flex items-center gap-2 px-4">
@@ -60,7 +62,7 @@
 				</div>
 
 				<div class="flex items-center gap-2">
-					<UserNav />
+					<UserNav {data} />
 				</div>
 			</div>
 		</div>
@@ -85,6 +87,7 @@
 					Runs
 				</a>
 			</div>
+			<UserNav {data} />
 		</div>
 	</div>
 
