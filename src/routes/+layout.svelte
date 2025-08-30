@@ -40,7 +40,7 @@
 						class="grid grid-cols-1 justify-items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
 					>
 						<MapPin class="grid h-8 w-8 stroke-1" />
-						Runs
+						Activités
 					</a>
 					<a
 						href="/"

@@ -1,4 +1,4 @@
-
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -22,8 +22,8 @@ model User {
   accounts      Account[]
   
   // Relations pour les runs
-  organizedRuns    Run[]           @relation("RunOrganizer")
-  participations   RunParticipant[]
+  organizedRuns Run[]           @relation("RunOrganizer")
+  participations RunParticipant[]
 
   @@map("user")
 }
@@ -31,36 +31,34 @@ model User {
 model Run {
   id                  String @id @default(cuid())
   title               String
-  description         String
+  description         String?
   location            String
-  date                String
-  time                String
-  distance            String
-  pace                String
-  maxParticipants     Int
-  currentParticipants Int    @default(0)
-  difficulty          String
+  date                DateTime
+  distance            String?
+  pace                String?
+  maxParticipants     Int      @default(10)
+  
+  // Relations
+  organizerId         String
+  organizer           User     @relation("RunOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  participants        RunParticipant[]
+  
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-   // Relations
-  organizerId    String
-  organizer      User               @relation("RunOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
-  participants   RunParticipant[]
+  @@map("run")
 }
 
 model RunParticipant {
-  id          String   @id @default(cuid())
-  userId      String
-  runId       String
-  joinedAt    DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  runId     String
+  joinedAt  DateTime @default(now())
   
-  // Relations
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  run         Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  run       Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
   
-  // Un utilisateur ne peut s'inscrire qu'une fois par run
-  @@unique([userId, runId])
+  @@unique([userId, runId]) // Un utilisateur ne peut rejoindre un run qu'une seule fois
   @@map("run_participant")
 }
 
