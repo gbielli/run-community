@@ -5,10 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { ChevronDown, LogOut, Settings, User } from '@lucide/svelte';
 
-	let { data } = $props();
-
-	const isAuthenticated = $derived(!!data.session);
-	const userInitials = $derived(data?.user?.name);
+	let { isAuthenticated, userData } = $props();
 </script>
 
 {#if isAuthenticated}
@@ -28,7 +25,7 @@
 
 				<!-- Nom (caché sur mobile) -->
 				<span class="hidden text-sm font-medium sm:inline">
-					{userInitials}
+					{userData.name}
 				</span>
 
 				<!-- Chevron -->
@@ -41,10 +38,10 @@
 			<DropdownMenu.Label>
 				<div class="flex flex-col space-y-1">
 					<p class="text-sm font-medium">
-						{data.user.name || 'Utilisateur'}
+						{userData.name || 'Utilisateur'}
 					</p>
 					<p class="text-xs text-muted-foreground">
-						{data.user.email}
+						{userData.email}
 					</p>
 				</div>
 			</DropdownMenu.Label>

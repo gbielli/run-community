@@ -20,6 +20,10 @@ model User {
   image         String?
   sessions      Session[]
   accounts      Account[]
+  
+  // Relations pour les runs
+  organizedRuns    Run[]           @relation("RunOrganizer")
+  participations   RunParticipant[]
 
   @@map("user")
 }
@@ -34,9 +38,30 @@ model Run {
   distance            String
   pace                String
   maxParticipants     Int
-  currentParticipants Int
-  organizer           String
+  currentParticipants Int    @default(0)
   difficulty          String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+   // Relations
+  organizerId    String
+  organizer      User               @relation("RunOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  participants   RunParticipant[]
+}
+
+model RunParticipant {
+  id          String   @id @default(cuid())
+  userId      String
+  runId       String
+  joinedAt    DateTime @default(now())
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  run         Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  
+  // Un utilisateur ne peut s'inscrire qu'une fois par run
+  @@unique([userId, runId])
+  @@map("run_participant")
 }
 
 model Session {
